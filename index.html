@@ -11,6 +11,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        /* Policy Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; overflow-y: auto; }
+        .modal-container { background: white; max-width: 700px; margin: 40px auto; padding: 30px; border-radius: 16px; position: relative; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -21,7 +24,7 @@
             <div class="space-x-6 hidden md:flex font-medium text-gray-600">
                 <a href="#" class="hover:text-blue-600">Home</a>
                 <a href="#" class="hover:text-blue-600">All PDFs</a>
-                <a href="#" class="hover:text-blue-600">Support</a>
+                <a href="#" onclick="openPolicy('contact')" class="hover:text-blue-600">Support</a>
             </div>
         </div>
     </nav>
@@ -33,72 +36,104 @@
 
     <main class="max-w-6xl mx-auto py-12 px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all">
                 <div class="h-48 bg-blue-50 flex items-center justify-center relative">
                     <i class="fa-solid fa-file-pdf text-6xl text-red-500"></i>
                     <span class="absolute top-4 right-4 bg-yellow-400 text-xs font-bold px-2 py-1 rounded">BEST SELLER</span>
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-800">Master Notes 2026 (Biology)</h3>
-                    <p class="text-gray-500 text-sm mt-2 leading-relaxed">Full NCERT coverage, diagram charts aur high-yield MCQ points included.</p>
+                    <h3 class="text-xl font-bold text-gray-800">UP GK/GS Master Book 2025</h3>
+                    <p class="text-gray-500 text-sm mt-2 leading-relaxed">UP GK/GS Master Book 2025</p>
                     <div class="mt-6 flex items-center justify-between">
                         <div>
                             <span class="text-sm text-gray-400 line-through">₹499</span>
-                            <span class="text-2xl font-bold text-slate-900 block">₹149</span>
+                            <span class="text-2xl font-bold text-slate-900 block">₹0</span>
                         </div>
-                        <button onclick="payWithRazorpay('149', 'Biology Master Notes')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
+                        <button onclick="payWithRazorpay('0', 'UP GK/GS Master Book 2025')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
                             <i class="fa-solid fa-cart-shopping text-sm"></i> Buy Now
                         </button>
                     </div>
                 </div>
             </div>
-
-            </div>
+        </div>
     </main>
 
     <footer class="bg-white border-t border-gray-200 py-10 text-center">
-        <p class="text-gray-500 text-sm">© 2026 PDFStore Digital Inc. Secure Payments by Razorpay.</p>
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm font-medium text-gray-600">
+                <a href="javascript:void(0)" onclick="openPolicy('terms')" class="hover:text-blue-600">Terms & Conditions</a>
+                <a href="javascript:void(0)" onclick="openPolicy('privacy')" class="hover:text-blue-600">Privacy Policy</a>
+                <a href="javascript:void(0)" onclick="openPolicy('shipping')" class="hover:text-blue-600">Shipping Policy</a>
+                <a href="javascript:void(0)" onclick="openPolicy('contact')" class="hover:text-blue-600">Contact Us</a>
+                <a href="javascript:void(0)" onclick="openPolicy('refund')" class="hover:text-blue-600">Cancellation & Refunds</a>
+            </div>
+            <p class="text-gray-400 text-xs">© 2026 Avadh Academy | PDFStore Digital Inc. Secure Payments by Razorpay.</p>
+        </div>
     </footer>
 
+    <div id="policyModal" class="modal">
+        <div class="modal-container shadow-2xl">
+            <button onclick="closePolicy()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            <div id="policyContent" class="prose prose-blue">
+                </div>
+        </div>
+    </div>
+
     <script>
+        // 1. Razorpay Logic
         function payWithRazorpay(amount, productName) {
             const options = {
-                "key": "rzp_test_ShHY1tSl54TlCO", // YAHAN APNI RAZORPAY KEY DAALEIN
-                "amount": amount * 100, // Paise mein hota hai
+                "key": "rzp_test_ShHY1tSl54TlCO", 
+                "amount": amount * 100, 
                 "currency": "INR",
-                "name": "PDF Store",
+                "name": "Avadh Academy",
                 "description": productName,
                 "image": "https://cdn-icons-png.flaticon.com/512/337/337946.png",
                 "handler": function (response) {
-                    // Ye function tab chalega jab payment SUCCESSFUL hogi
                     if(response.razorpay_payment_id) {
                         alert("Payment Success! ID: " + response.razorpay_payment_id);
                         triggerDownload(productName);
                     }
                 },
-                "prefill": {
-                    "name": "User Name",
-                    "email": "user@example.com",
-                    "contact": "9999999999"
-                },
-                "theme": {
-                    "color": "#2563eb"
-                }
+                "theme": { "color": "#2563eb" }
             };
             const rzp1 = new Razorpay(options);
             rzp1.open();
         }
 
         function triggerDownload(name) {
-            // Asli PDF URL yahan aayega
-            const pdfUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'; 
+            const pdfUrl = 'https://drive.google.com/file/d/1SgoQq_BvuMJrPJ5ELQ2zv-dTPkreDq_C/view?usp=sharing'; 
             const link = document.createElement('a');
             link.href = pdfUrl;
             link.setAttribute('download', name + '.pdf');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // 2. Policy Logic
+        const policyData = {
+            terms: "<h2 class=\"text-2xl font-bold mb-4\">Terms & Conditions</h2><p class=\"text-gray-600 leading-relaxed\">Welcome to Avadh Academy. By using this website, you agree to follow our rules. Our content is for study purposes only. Any unauthorized distribution or copying of our PDFs is strictly prohibited and may lead to legal action.</p>",
+            privacy: "<h2 class=\"text-2xl font-bold mb-4\">Privacy Policy</h2><p class=\"text-gray-600 leading-relaxed\">Hum aapki privacy ka pura dhayan rakhte hain. Your name, email, and phone number are used only to process your payment and provide download links. We do not sell your data to anyone.</p>",
+            shipping: "<h2 class=\"text-2xl font-bold mb-4\">Shipping Policy</h2><p class=\"text-gray-600 leading-relaxed\">Since these are digital products (PDFs), there is NO physical shipping. You will receive an instant download link immediately after a successful payment on this screen.</p>",
+            contact: "<h2 class=\"text-2xl font-bold mb-4\">Contact Us</h2><p class=\"text-gray-600\">If you face any issues, contact us at:<br><br><b>Email:</b> shauryyadav340@gmail.com<br><b>WhatsApp:</b> +91 8858994001<br><b>Business Address:</b> [Pratapgrha 230304 ]</p>",
+            refund: "<h2 class=\"text-2xl font-bold mb-4\">Cancellation & Refunds</h2><p class=\"text-gray-600 leading-relaxed\">Due to the nature of digital products, once a PDF is downloaded or the link is shared, we cannot offer a refund. In case of double payment, please contact support for a refund within 48 hours.</p>"
+        };
+        function openPolicy(type) {
+            document.getElementById('policyContent').innerHTML = policyData[type];
+            document.getElementById('policyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // stop scroll
+        }
+
+        function closePolicy() {
+            document.getElementById('policyModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // enable scroll
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('policyModal')) {
+                closePolicy();
+            }
         }
     </script>
 </body>
