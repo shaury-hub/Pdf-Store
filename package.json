@@ -1,0 +1,21 @@
+{
+  "name": "pdf-store",
+  "version": "1.0.0",
+  "description": "Digital Study Store - Premium PDFs",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build required for static HTML'",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "pdf",
+    "store",
+    "digital",
+    "study"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
